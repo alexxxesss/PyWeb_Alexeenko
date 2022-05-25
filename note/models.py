@@ -5,8 +5,13 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 
+def datetime_now_plus_one_day():
+    return datetime.now() + timedelta(days=1)
+
+
 class Note(models.Model):
     """Заметки"""
+
     class StatusChoices(models.TextChoices):
         ACTIVE = 'Active', _('Активно')
         DELAYED = 'Delayed', _('Отложено')
@@ -18,7 +23,7 @@ class Note(models.Model):
     importance = models.BooleanField(default=False, verbose_name=_("Важно"))
     status = models.CharField(max_length=15, default=StatusChoices.DELAYED,
                               choices=StatusChoices.choices, verbose_name=_("Статус"))
-    deadline = models.DateTimeField(default=lambda: datetime.now() + timedelta(days=1),
+    deadline = models.DateTimeField(default=datetime_now_plus_one_day(),
                                     verbose_name=_("Крайний срок"))
     create_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Время создания"))
     update_at = models.DateTimeField(auto_now=True, verbose_name=_("Время обновления"))
