@@ -3,9 +3,33 @@ from django.contrib import admin
 from .models import Note, Comment
 
 
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    # Поля в списке
+    list_display = ('author', 'note', 'text_comment', 'rating', 'created')
+    ##
+    #  Группировка полей в режиме редактирования
+    fields = (('author', 'note'), 'text_comment', 'rating', 'created')
+    ##
+    #  Поля только для чтения в режиме редактирования
+    readonly_fields = ('note', 'created', 'author')
+    ##
+    #  Поиск по выбранным полям
+    search_fields = ['text_comment']
+    ##
+    #  Фильтры справа
+    list_filter = ('author', 'rating')
+
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+
+    extra = 0
+    min_num = 0
+
+
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-
     # Поля в списке
     list_display = ('title', 'public', 'importance', 'status', 'id', 'update_at', 'author')
     ##
@@ -21,21 +45,4 @@ class NoteAdmin(admin.ModelAdmin):
     #  Фильтры справа
     list_filter = ('public', 'importance', 'status')
 
-
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
-
-    # Поля в списке
-    list_display = ('author', 'note', 'text_comment', 'rating', 'created')
-    ##
-    #  Группировка полей в режиме редактирования
-    fields = (('author', 'note'), 'text_comment', 'rating', 'created')
-    ##
-    #  Поля только для чтения в режиме редактирования
-    readonly_fields = ('note', 'created', 'author')
-    ##
-    #  Поиск по выбранным полям
-    search_fields = ['text_comment']
-    ##
-    #  Фильтры справа
-    list_filter = ('author', 'rating')
+    inlines = [CommentInline]
