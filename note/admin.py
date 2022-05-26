@@ -12,7 +12,7 @@ class CommentAdmin(admin.ModelAdmin):
     fields = (('author', 'note'), 'text_comment', 'rating', 'created')
     ##
     #  Поля только для чтения в режиме редактирования
-    readonly_fields = ('note', 'created', 'author')
+    readonly_fields = ('created',)
     ##
     #  Поиск по выбранным полям
     search_fields = ['text_comment']
@@ -31,13 +31,13 @@ class CommentInline(admin.TabularInline):
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
     # Поля в списке
-    list_display = ('title', 'public', 'importance', 'status', 'id', 'update_at', 'author')
+    list_display = ('title', 'public', 'importance', 'status', 'deadline', 'update_at', 'author')
     ##
     #  Группировка полей в режиме редактирования
-    fields = (('title', 'public', 'importance'), 'status', 'message', 'update_at', 'create_at')
+    fields = (('title', 'public', 'importance'), 'deadline', 'author', 'status', 'message', 'update_at', 'create_at')
     ##
     #  Поля только для чтения в режиме редактирования
-    readonly_fields = ('update_at', 'create_at', 'author')
+    readonly_fields = ('update_at', 'create_at')
     ##
     #  Поиск по выбранным полям
     search_fields = ['title', 'message', 'author']

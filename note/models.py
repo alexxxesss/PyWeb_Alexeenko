@@ -47,7 +47,7 @@ class Comment(models.Model):
         GOOD = 4, _('Хорошо')
         EXCELLENT = 5, _('Отлично')
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Автор"))
     note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name="comments", verbose_name=_("Запись"))
     text_comment = models.TextField(verbose_name=_("Текст заметки"))
     rating = models.IntegerField(default=Rating.WITHOUT_RATING, choices=Rating.choices, verbose_name=_("Оценка"))
