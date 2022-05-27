@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 
-from .models import Note, Comment
+from .models import ToDo, Comment
 from .serializers import NoteSerializer, NoteDetailSerializer, CommentSerializer
 
 
@@ -14,7 +14,7 @@ class NoteListCreateApiView(APIView):
 
     def get(self, request: Request):
 
-        objects = Note.objects.all()
+        objects = ToDo.objects.all()
         serializer = NoteSerializer(instance=objects, many=True)
 
         return Response(serializer.data)
@@ -34,7 +34,7 @@ class NoteListCreateApiView(APIView):
 class NoteDetailApiView(APIView):
 
     def get(self, request: Request, pk):
-        note = get_object_or_404(Note, pk=pk)
+        note = get_object_or_404(ToDo, pk=pk)
         serializer = NoteDetailSerializer(instance=note)
 
         return Response(serializer.data)

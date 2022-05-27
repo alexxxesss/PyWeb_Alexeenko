@@ -9,7 +9,7 @@ def datetime_now_plus_one_day():
     return datetime.now() + timedelta(days=1)
 
 
-class Note(models.Model):
+class ToDo(models.Model):
     """Заметки"""
 
     class StatusChoices(models.TextChoices):
@@ -48,7 +48,7 @@ class Comment(models.Model):
         EXCELLENT = 5, _('Отлично')
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Автор"))
-    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name="comments", verbose_name=_("Запись"))
+    todo = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="comments", verbose_name=_("Запись"))
     text_comment = models.TextField(verbose_name=_("Текст заметки"))
     rating = models.IntegerField(default=Rating.WITHOUT_RATING, choices=Rating.choices, verbose_name=_("Оценка"))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("Время создания комментария"))

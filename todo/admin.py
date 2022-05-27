@@ -1,15 +1,15 @@
 from django.contrib import admin
 
-from .models import Note, Comment
+from .models import ToDo, Comment
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     # Поля в списке
-    list_display = ('author', 'note', 'text_comment', 'rating', 'created')
+    list_display = ('author', 'todo', 'text_comment', 'rating', 'created')
     ##
     #  Группировка полей в режиме редактирования
-    fields = (('author', 'note'), 'text_comment', 'rating', 'created')
+    fields = (('author', 'todo'), 'text_comment', 'rating', 'created')
     ##
     #  Поля только для чтения в режиме редактирования
     readonly_fields = ('created',)
@@ -28,8 +28,8 @@ class CommentInline(admin.TabularInline):
     min_num = 0
 
 
-@admin.register(Note)
-class NoteAdmin(admin.ModelAdmin):
+@admin.register(ToDo)
+class ToDoAdmin(admin.ModelAdmin):
     # Поля в списке
     list_display = ('title', 'public', 'importance', 'status', 'deadline', 'update_at', 'author')
     ##
