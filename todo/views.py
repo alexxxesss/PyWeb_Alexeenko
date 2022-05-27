@@ -7,6 +7,7 @@ from rest_framework.generics import ListAPIView
 
 from .models import ToDo, Comment
 from .serializers import NoteSerializer, NoteDetailSerializer, CommentListSerializer
+from .filters import *
 
 
 class NoteListCreateApiView(APIView):
@@ -82,3 +83,13 @@ class NoteDetailApiView(APIView):
 class CommentListApiView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentListSerializer
+
+
+class ToDoFilterListApiView(ListAPIView):
+    queryset = ToDo.objects.all()
+    serializer_class = NoteSerializer
+
+    def filter_queryset(self, queryset):
+        queryset = importance_filter(queryset, self.request.query_params.get("importance"))
+        queryset = public_filter(queryset, self.request.query_params.get("public"))
+        return queryset
