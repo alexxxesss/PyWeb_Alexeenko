@@ -85,9 +85,20 @@ class CommentListApiView(ListAPIView):
     serializer_class = CommentListSerializer
 
 
+class CommentAuthorApiView(ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentListSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(author=self.request.user)
+        return queryset
+
+
 class ToDoFilterListApiView(ListAPIView):
     queryset = ToDo.objects.all()
     serializer_class = NoteSerializer
+
     ordering = ["deadline", "importance"]
 
     def get_queryset(self):

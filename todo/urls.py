@@ -7,4 +7,5 @@ urlpatterns = [
     path('todo/<int:pk>/', views.NoteDetailApiView.as_view()),
     path('comments/', views.CommentListApiView.as_view()),
     path('todo/filters/', views.ToDoFilterListApiView.as_view()),
+    path('mycomments/', views.CommentAuthorApiView.as_view()),
 ]
