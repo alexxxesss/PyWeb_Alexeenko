@@ -49,7 +49,7 @@ class NoteDetailApiView(APIView):
         if not note.author == request.user:
             return Response(
                 data="Заметка не изменена, ее может изменить только автор",
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_403_FORBIDDEN
             )
 
         serializer.save(author=request.user)
@@ -66,7 +66,7 @@ class NoteDetailApiView(APIView):
         if not note.author == request.user:
             return Response(
                 data="Заметка не изменена, ее может изменить только автор",
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_403_FORBIDDEN
             )
 
         serializer.save(author=request.user)
@@ -75,9 +75,9 @@ class NoteDetailApiView(APIView):
 
     def delete(self, request, pk):
         note = get_object_or_404(ToDo, pk=pk)
-        del_note = note.delete()
+        note.delete()
 
-        return Response(del_note)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentListApiView(ListAPIView):
@@ -88,8 +88,16 @@ class CommentListApiView(ListAPIView):
 class ToDoFilterListApiView(ListAPIView):
     queryset = ToDo.objects.all()
     serializer_class = NoteSerializer
+    ordering = ["deadline", "importance"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return self.order_by_queryset(queryset)
 
     def filter_queryset(self, queryset):
         queryset = importance_filter(queryset, self.request.query_params.get("importance"))
         queryset = public_filter(queryset, self.request.query_params.get("public"))
         return queryset
+
+    def order_by_queryset(self, queryset):
+        return queryset.order_by(*self.ordering)

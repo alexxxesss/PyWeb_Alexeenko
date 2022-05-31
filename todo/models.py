@@ -49,7 +49,7 @@ class Comment(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Автор"))
     todo = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="comments", verbose_name=_("Запись"))
-    text_comment = models.TextField(verbose_name=_("Текст заметки"))
+    text_comment = models.TextField(verbose_name=_("Текст комментария"))
     rating = models.IntegerField(default=Rating.WITHOUT_RATING, choices=Rating.choices, verbose_name=_("Оценка"))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("Время создания комментария"))
 
