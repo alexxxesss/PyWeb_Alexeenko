@@ -77,8 +77,8 @@ class NoteDetailSerializer(serializers.ModelSerializer):
         ret['create_at'] = create_at.strftime('%d %B %Y %H:%M:%S')
         update_at = datetime.strptime(ret['update_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
         ret['update_at'] = update_at.strftime('%d %B %Y %H:%M:%S')
-        deadline = datetime.strptime(ret['deadline'], '%Y-%m-%dT%H:%M:%SZ')
-        ret['deadline'] = deadline.strftime('%d %B %Y %H:%M:%S')
+        # deadline = datetime.strptime(ret['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+        # ret['deadline'] = deadline.strftime('%d %B %Y %H:%M:%S')
         return ret
 
 

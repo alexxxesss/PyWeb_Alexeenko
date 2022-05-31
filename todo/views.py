@@ -1,4 +1,7 @@
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.views import View
+from django.views.generic import TemplateView
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -8,6 +11,7 @@ from rest_framework.generics import ListAPIView
 from .models import ToDo, Comment
 from .serializers import NoteSerializer, NoteDetailSerializer, CommentListSerializer
 from .filters import *
+from .settings_local import SERVER_VERSION
 
 
 class NoteListCreateApiView(APIView):
@@ -34,7 +38,6 @@ class NoteListCreateApiView(APIView):
 
     def order_by_objects(self, objects):
         return objects.order_by(*self.ordering)
-
 
 
 class NoteDetailApiView(APIView):
@@ -81,9 +84,16 @@ class NoteDetailApiView(APIView):
 
     def delete(self, request, pk):
         note = get_object_or_404(ToDo, pk=pk)
+
+        if not note.author == request.user:
+            return Response(
+                data="Заметка не удалена, ее может удалить только автор",
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         note.delete()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data="Запись удалена", status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentListApiView(ListAPIView):
@@ -118,3 +128,23 @@ class ToDoFilterListApiView(ListAPIView):
 
     def order_by_queryset(self, queryset):
         return queryset.order_by(*self.ordering)
+
+
+class AboutAPI(View):
+    def get(self, request):
+        template = "todo/about.html"
+        context = {
+            "server_version": SERVER_VERSION,
+            "user_name": request.user
+        }
+        return render(request, template_name=template, context=context)
+
+
+class AboutTemplateView(TemplateView):
+    template_name = "todo/about.html"
+
+    def get(self, request,  *args, **kwargs):
+        context = super().get_context_data()
+        context["user_name"] = request.user
+        context["server_version"] = SERVER_VERSION
+        return self.render_to_response(context)
