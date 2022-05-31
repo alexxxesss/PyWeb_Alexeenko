@@ -11,10 +11,12 @@ from .filters import *
 
 
 class NoteListCreateApiView(APIView):
+    ordering = ["deadline", "importance"]
 
     def get(self, request: Request):
-
         objects = ToDo.objects.all()
+        objects = self.order_by_objects(objects)
+
         serializer = NoteSerializer(instance=objects, many=True)
 
         return Response(serializer.data)
@@ -29,6 +31,10 @@ class NoteListCreateApiView(APIView):
         serializer.save(author=request.user)
 
         return Response(serializer.data)
+
+    def order_by_objects(self, objects):
+        return objects.order_by(*self.ordering)
+
 
 
 class NoteDetailApiView(APIView):
