@@ -10,7 +10,7 @@ from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import ToDo, Comment
-from .serializers import NoteSerializer, NoteDetailSerializer, CommentListSerializer, QueryParamsToDoFilterSerializer
+from .serializers import *
 from .filters import *
 from .settings_local import SERVER_VERSION
 
@@ -125,22 +125,6 @@ class ToDoFilterListApiView(ListAPIView):
         queryset = super().get_queryset()
         return self.order_by_queryset(queryset)
 
-    # def filter_queryset(self, queryset):
-    #
-    #     queryset = importance_filter(queryset, self.request.query_params.get("importance"))
-    #     queryset = public_filter(queryset, self.request.query_params.get("public"))
-    #     queryset = filter_by_author_id(queryset, self.request.query_params.get("author_id"))
-    #
-    #     # TODO: Как сделать чтобы не по id была фильтрация, а именно по имени автора?
-    #
-    #     query_params = QueryParamsToDoFilterSerializer(data=self.request.query_params)
-    #     query_params.is_valid(raise_exception=True)
-    #     list_status = query_params.data.get("status")
-    #     if list_status:
-    #         queryset = queryset.filter(status__in=query_params.data["status"])
-    #
-    #     return queryset
-
     def order_by_queryset(self, queryset):
         return queryset.order_by(*self.ordering)
 
@@ -156,6 +140,9 @@ class AboutAPI(View):
 
 
 # class AboutTemplateView(TemplateView):
+#     """
+#     Второй способ сформировать страничку About
+#     """
 #     template_name = "todo/about.html"
 #
 #     def get(self, request,  *args, **kwargs):
@@ -163,3 +150,23 @@ class AboutAPI(View):
 #         context["user_name"] = request.user
 #         context["server_version"] = SERVER_VERSION
 #         return self.render_to_response(context)
+
+
+class CommentFilterListApiView(ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentListSerializer
+
+    def filter_queryset(self, queryset):
+        query_params = QueryParamsCommentFilterSerializer(data=self.request.query_params)
+        query_params.is_valid(raise_exception=True)
+
+        list_rating = query_params.data.get("rating")
+        author = self.request.query_params.get("author")
+
+        if list_rating:
+            queryset = queryset.filter(rating__in=query_params.data["rating"])
+
+        if author:
+            queryset = queryset.filter(author__username=author)
+
+        return queryset

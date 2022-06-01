@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def datetime_now_plus_one_day():
-    return datetime.now() + timedelta(days=1)
+    return datetime.now().replace(microsecond=0) + timedelta(days=1)
 
 
 class ToDo(models.Model):

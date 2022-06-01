@@ -22,6 +22,8 @@ class NoteSerializer(serializers.ModelSerializer):
         ret['create_at'] = create_at.strftime('%d %B %Y %H:%M:%S')
         update_at = datetime.strptime(ret['update_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
         ret['update_at'] = update_at.strftime('%d %B %Y %H:%M:%S')
+        deadline = datetime.strptime(ret['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+        ret['deadline'] = deadline.strftime('%d %B %Y %H:%M:%S')
         return ret
 
 
@@ -77,8 +79,8 @@ class NoteDetailSerializer(serializers.ModelSerializer):
         ret['create_at'] = create_at.strftime('%d %B %Y %H:%M:%S')
         update_at = datetime.strptime(ret['update_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
         ret['update_at'] = update_at.strftime('%d %B %Y %H:%M:%S')
-        # deadline = datetime.strptime(ret['deadline'], '%Y-%m-%dT%H:%M:%SZ')
-        # ret['deadline'] = deadline.strftime('%d %B %Y %H:%M:%S')
+        deadline = datetime.strptime(ret['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+        ret['deadline'] = deadline.strftime('%d %B %Y %H:%M:%S')
         return ret
 
 
@@ -104,8 +106,7 @@ class CommentListSerializer(serializers.ModelSerializer):
         return ret
 
 
-class QueryParamsToDoFilterSerializer(serializers.Serializer):
-    status = serializers.ListField(
-        child=serializers.ChoiceField(choices=ToDo.StatusChoices.choices),
-        required=False
+class QueryParamsCommentFilterSerializer(serializers.Serializer):
+    rating = serializers.ListField(
+        child=serializers.ChoiceField(choices=Comment.Rating.choices), required=False,
     )
