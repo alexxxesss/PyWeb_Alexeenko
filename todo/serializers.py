@@ -102,3 +102,10 @@ class CommentListSerializer(serializers.ModelSerializer):
         created = datetime.strptime(ret['created'], '%Y-%m-%dT%H:%M:%S.%fZ')
         ret['created'] = created.strftime('%d %B %Y %H:%M:%S')
         return ret
+
+
+class QueryParamsToDoFilterSerializer(serializers.Serializer):
+    status = serializers.ListField(
+        child=serializers.ChoiceField(choices=ToDo.StatusChoices.choices),
+        required=False
+    )

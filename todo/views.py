@@ -7,9 +7,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import ToDo, Comment
-from .serializers import NoteSerializer, NoteDetailSerializer, CommentListSerializer
+from .serializers import NoteSerializer, NoteDetailSerializer, CommentListSerializer, QueryParamsToDoFilterSerializer
 from .filters import *
 from .settings_local import SERVER_VERSION
 
@@ -115,16 +116,30 @@ class ToDoFilterListApiView(ListAPIView):
     queryset = ToDo.objects.all()
     serializer_class = NoteSerializer
 
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ToDoFilter
+
     ordering = ["deadline", "importance"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
         return self.order_by_queryset(queryset)
 
-    def filter_queryset(self, queryset):
-        queryset = importance_filter(queryset, self.request.query_params.get("importance"))
-        queryset = public_filter(queryset, self.request.query_params.get("public"))
-        return queryset
+    # def filter_queryset(self, queryset):
+    #
+    #     queryset = importance_filter(queryset, self.request.query_params.get("importance"))
+    #     queryset = public_filter(queryset, self.request.query_params.get("public"))
+    #     queryset = filter_by_author_id(queryset, self.request.query_params.get("author_id"))
+    #
+    #     # TODO: Как сделать чтобы не по id была фильтрация, а именно по имени автора?
+    #
+    #     query_params = QueryParamsToDoFilterSerializer(data=self.request.query_params)
+    #     query_params.is_valid(raise_exception=True)
+    #     list_status = query_params.data.get("status")
+    #     if list_status:
+    #         queryset = queryset.filter(status__in=query_params.data["status"])
+    #
+    #     return queryset
 
     def order_by_queryset(self, queryset):
         return queryset.order_by(*self.ordering)
@@ -140,11 +155,11 @@ class AboutAPI(View):
         return render(request, template_name=template, context=context)
 
 
-class AboutTemplateView(TemplateView):
-    template_name = "todo/about.html"
-
-    def get(self, request,  *args, **kwargs):
-        context = super().get_context_data()
-        context["user_name"] = request.user
-        context["server_version"] = SERVER_VERSION
-        return self.render_to_response(context)
+# class AboutTemplateView(TemplateView):
+#     template_name = "todo/about.html"
+#
+#     def get(self, request,  *args, **kwargs):
+#         context = super().get_context_data()
+#         context["user_name"] = request.user
+#         context["server_version"] = SERVER_VERSION
+#         return self.render_to_response(context)
