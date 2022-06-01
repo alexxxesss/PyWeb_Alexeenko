@@ -1,8 +1,10 @@
 from typing import Optional
 from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
+from django_filters import widgets
 
 from .models import ToDo, Comment
+
 
 def importance_filter(queryset: QuerySet, importance: Optional[bool]):
 
@@ -28,7 +30,10 @@ def filter_by_author_id(queryset: QuerySet, author_id: Optional[int]):
 
 
 class ToDoFilter(filters.FilterSet):
-    ...
+    status = filters.MultipleChoiceFilter(
+        conjoined=False,
+        choices=ToDo.StatusChoices.choices
+    )
 
     class Meta:
         model = ToDo
@@ -36,5 +41,5 @@ class ToDoFilter(filters.FilterSet):
             'importance',
             'public',
             'author',
-            'status',
+            'status'
         ]
