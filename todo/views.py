@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
+from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -170,3 +171,16 @@ class CommentFilterListApiView(ListAPIView):
             queryset = queryset.filter(author__username=author)
 
         return queryset
+
+
+class LoginView(APIView):
+    def post(self, request: Request):
+        user = authenticate(
+            username=request.data['username'],
+            password=request.data['password']
+        )
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
