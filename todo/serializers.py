@@ -13,7 +13,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ToDo
-        exclude = ('id', )
+        exclude = ()
         read_only_fields = ("author",)
 
     def to_representation(self, instance):

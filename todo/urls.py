@@ -13,7 +13,7 @@ urlpatterns = [
     path('about/', views.AboutAPI.as_view()),
 
     # path('login/', views_token.obtain_auth_token),
-    path('login/', views.LoginView.as_view()),
+    path('login/', views_token.obtain_auth_token),
 
     # path('about/', views.AboutTemplateView.as_view()),
 ]

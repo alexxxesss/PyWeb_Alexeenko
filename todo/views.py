@@ -8,6 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import ToDo, Comment
@@ -17,6 +18,7 @@ from .settings_local import SERVER_VERSION
 
 
 class NoteListCreateApiView(APIView):
+    permission_classes = (IsAuthenticated, )
     ordering = ["deadline", "importance"]
 
     def get(self, request: Request):
